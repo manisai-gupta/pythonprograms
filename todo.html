@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+
+    <script type="text/javascript">
+
+        $(document).ready(function () {
+            console.log("page is ready");
+
+            var get_todos = function () {
+
+                $('#todos').html("");
+
+                $.get("http://127.0.0.1:1309/gettodos/", function (data) {
+                    var data_json = JSON.parse(data);
+                    var i;
+                    for (i = 0; i < data_json.length; i++) {
+
+                        $('#todos').append("<br><div style='text-align:center;width:97%;color:white;font-size:35px;font-family: Roboto;'>" + data_json[i]+  "<span style='font-size:15px;'><button class='del_btn w3-bar-item w3-black' id='"+data_json[i][0]+"' style='width:33px;height:25px;color:black'  >&#10060;</button></span> <button class='update_btn w3-bar-item w3-black' id='"+data_json[i][0]+"' style='width:70px;height:45px;color:black'  >edit</button></div>");
+
+                    }
+                
+                });
+
+            };
+
+            get_todos();
+
+            $('#todos').on('click','.del_btn', function(event){
+             var id = $(this).attr('id');
+             delete_selected_todo(id);
+            });
+
+            $('#todos').on('click','.update_btn', function(event){
+            
+             var id = $(this).attr('id');
+             
+             update_selected_todo(id);
+            });
+
+           
+
+            //$('#get_todo').click(function (){
+
+              //  $('#todos').html("");
+                //$.get("http://127.0.0.1:1309/gettodos/", function (data) {   
+                  //  var data_json = JSON.parse(data);
+                    //console.log(data_json);
+                    //var i;
+                    //for (i = 0; i < data_json.length; i++) { 
+
+                      //  $('#todos').append(" <div  style='text-align:center;width:97%;color:white;font-size:35px;font-family: cursive;'>" + data_json[i][1]+ "<button class='del_btn' onclick='test()'>X</button></div>");
+                        
+                   // }
+                
+               // });
+
+            //});
+
+            
+            $('#add_todo').click(function(event){
+                //alert("hello")
+                //$('#todo_text_field').val();
+                var input=$('#todo_text_field').val();
+                //alert(input);
+                add_todo(input);
+             
+            });
+
+
+            var add_todo = function(id){
+                
+
+                //var user_todo = prompt("Please enter a todo");
+                $.get("http://127.0.0.1:1309/insertdb/"+id , function (data) {
+
+                   get_todos();
+                   //alert("SUCCESS");
+
+                });
+                
+            };
+
+            
+            var delete_selected_todo = function(id){
+                //var user_todo = prompt("Please select a rowid to delete a todo ");
+                $.get("http://127.0.0.1:1309/deletetodos/" + id, function (data) {
+
+                    get_todos();
+                    //alert("todo deleted");
+
+                });
+                
+            }; 
+
+            
+
+            var update_selected_todo = function(id){
+                
+                var user_todo = prompt("update a new value in todo");
+                $.get("http://127.0.0.1:1309/updatetodos/" +user_todo+'/'+ id, function (data) {
+
+                    get_todos();
+                    //alert("todo deleted");
+
+                });
+                
+            }; 
+            
+            $('#update_todo').click(function () {
+                
+
+                var user_todo = prompt("update a new value in todo");
+                var user_todo1 = prompt("select a rowid in todo");
+                $.get("http://127.0.0.1:1309/updatetodos/" +user_todo+'/'+user_todo1, function (data) {
+
+                    get_todos();
+                   //alert("todo updated");
+
+                });
+            });
+
+            //$('#photo').click(function () {
+
+              //  $.get("http://127.0.0.1:1309/", function (data) {
+                //    var i=data;
+                  //  console.log(i);
+                    //$('#img').attr("src",i);
+               // });
+            //});
+
+            $('#reload').click(function(){
+
+                location.reload(); 
+
+            });
+
+
+        });
+
+
+    </script>
+
+
+
+</head>
+
+<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+
+<body style="padding:40px">
+
+    <div id="header" style="text-align:center;width:97%;background:black;color:rgb(223, 221, 221);font-size:35px;font-family: cursive;">
+
+        MY TODOS LIST  
+
+    </div>
+    <br> 
+    <div id="todos"></div>
+    <br>
+    <input type="text" id="todo_text_field" name="add_todo" style="height: 37px;">  <button id="add_todo" class=" add_btn w3-bar-item w3-btn w3-black" style="width:18.3%;">Add Todo</button> 
+    <button id="update_todo" class="w3-bar-item w3-btn w3-black" style="width:18.3%;">update Todo</button>
+    <button id ="reload" onclick = "locationreload()" class="w3-btn w3-black w3-square w3-&#128260;&#128260;"style="width:18.3%;" >refresh_me&#128260; </button>
+    <a href="file:///C:/Users/Omsairam/.vscode/frontpagetodo.html">
+        <button class="w3-bar-item w3-btn w3-black" style="width:18.3%;">EXIT</button>
+    </a>
+    <br> <br>
+    <img id="img" src="" ></img>
+    <style> body{background-image:url("https://www.itl.cat/pngfile/big/244-2440804_green-blue-polygon-background.jpg");background-size: 1380px 800px;}</style>
+    
+</html>
